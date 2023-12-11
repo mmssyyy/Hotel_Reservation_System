@@ -1,0 +1,434 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>부대시설 예약</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		
+		<script src="assets/js/hotel_reserve.js"></script>
+		<script>
+			window.onload = function() {
+				// 쿼리 문자열 매개변수를 얻는 함수
+				function getQueryParam(param) {
+					var params = new URLSearchParams(window.location.search);
+					return params.get(param);
+				}
+
+				// 쿼리 문자열에서 부가시설 가격을 가져와 입력 필드에 설정
+				var hotelName = getQueryParam('hotel');
+				if (hotelName) {
+					const el = document.getElementById('hotel');
+					const len = el.options.length;
+					for (let i=0; i<len; i++){  
+						if(el.options[i].value == hotelName){
+							el.options[i].selected = true;
+						}
+					}
+				}
+
+				var convenience = getQueryParam('convenience');
+				var convenienceList = ["c1", "c2", "c3", "c4", "c5", "c6", "c7"];
+				if (convenience) {
+					for (var n=0; n<convenience.length; n++) {
+						document.getElementById(convenienceList[convenience[n]-1]).style.display = "flex";
+					}
+				} else {
+					for (var n=0; n<7; n++) {
+						document.getElementById(convenienceList[n]).style.display = "flex";
+					}
+				}
+
+				// 호텔 선택에 따른 부대시설 설명 변경
+				function changeLangSelect(){
+					var langSelect = document.getElementById("hotel");
+					var selectValue = langSelect.options[langSelect.selectedIndex].value;
+					updateFacilityDescriptions(selectValue);
+				}
+
+
+				function updateFacilityDescriptions(hotelName) {
+                var facilityDescriptions = {
+                    "제주 글로스터 호텔": {
+                        "c1": "가격: 500,000원, 수용 가능 인원: 최대 70명, 방 개수: 3개 \n 제주 글로스터 호텔 연회장: 기업 세미나나 연회에 적합한 고급 연회장입니다.",
+                        "c2": "가격: 100,000원/박, 수용 가능 인원: 최대 50명, 수영장 개수: 3개 \n 제주 글로스터 호텔 수영장: 넓은 수영장에서 휴식을 취하세요.",
+                        "c3": "가격: 10,000원/박, 당구대 개수: 20개 \n 제주 글로스터 호텔 당구장: 당구를 즐기기에 최적화된 시설입니다..",
+                        "c4": "가격: 10,000원/박, 수용 가능 인원: 최대 4명, 방 개수: 15개 \n 제주 글로스터 호텔 노래방: 다양한 노래를 부를 수 있는 노래방 시설입니다.",
+						"c5": "가격: 30,000원/박, 수용 가능 인원: 최대 30명 \n 제주 글로스터 호텔 식당: 품격 있는 식사를 즐길 수 있는 레스토랑입니다.",
+                        "c6": "가격: 10,000원/박, 수용 가능 인원: 최대 30명 \n 제주 글로스터 호텔 헬스장: 건강한 라이프스타일을 위한 헬스장 시설입니다.",
+						"c7": "가격: 5,000원/박, 수용 가능 차량: 최대 100대 \n 제주 글로스터 호텔 주차장: 넓은 주차장을 통해 편리하게 차량을 주차하세요."
+                    },
+                    "서울 그랜드 하얏트 호텔": {
+                        "c1": "가격: 700,000원, 수용 가능 인원: 최대 150명, 연회장 개수 : 3개 \n서울 그랜드 하얏트 호텔 연회장: 중심에서 우아한 연회를 즐길 수 있는 연회장입니다.",
+						"c2": "가격: 20,000원, 수용 가능 인원 : 최대 30명 \n서울 그랜드 하얏트 호텔 수영장: 도심 속 오아시스 같은 수영장입니다.",
+						"c3": "가격: 10,000원, 당구대 개수: 20개\n서울 그랜드 하얏트 호텔 당구장: 가족들이 함께 즐길 수 있는 당구장입니다.",
+						"c4": "가격: 10,000원, 노래방 개수 : 10개 \n서울 그랜드 하얏트 호텔 노래방: 재밌게 즐길 수 있는 노래방 시설입니다.",
+						"c5": "가격: 40,000원, 수용 가능 인원: 최대 200명\n서울 그랜드 하얏트 호텔 식당: 다양한 음식이 뷔페식으로 준비되어있는 고급 레스토랑입니다.",
+						"c6": "가격: 7,000원, 수용 가능 인원: 최대 50명\n서울 그랜드 하얏트 호텔 헬스장: 편하게 운동할 수 있는 헬스장 시설입니다.",
+						"c7": "가격: 무료, 주차 가능 차량: 최대 300대\n서울 그랜드 하얏트 호텔 주차장: 편리한 주차를 제공하는 주차장입니다."
+                    },
+                    "홀리데이 인 광주호텔": {
+                        "c1": "가격: 800,000원, 수용 가능 인원: 최대 150명, 연회장 개수: 2개 \n홀리데이 인 광주호텔 연회장: 여러 행사가 가능한 연회장입니다.",
+						"c2": "가격: 20,000원, 수용 가능 인원: 50명 \n홀리데이 인 광주호텔 수영장: 도심 속 오아시스 같은 수영장입니다.",
+						"c3": "가격: 10,000원 , 당구대 개수: 5개 \n홀리데이 인 광주호텔 당구장: 친구들과 함께 즐기기 좋은 당구장입니다.",
+						"c4": "가격: 20,000원, 노래방 개수: 7 \n홀리데이 인 광주호텔 노래방: 가족들과 신나게 노래를 불러보세요.",
+						"c5": "가격: 50,000원, 수용 가능 인원: 70명 \n홀리데이 인 광주호텔 식당: 세계 각국의 요리를 즐길 수 있는 다양한 뷔페식 레스토랑입니다.",
+						"c6": "가격: 5,000원, 수용 가능 인원: 30명 \n홀리데이 인 광주호텔 헬스장: 넓은 공간에서 편안하게 운동할 수 있는 헬스장입니다.",
+						"c7": "가격: 무료, 주차 가능 차량: 30대 \n홀리데이 인 광주호텔 주차장: 넓은 주차 공간을 제공하는 편리한 주차장입니다."
+                    },
+                };
+
+				 // 호텔 별 부대시설 설명 업데이트
+				 for (var i = 1; i <= 7; i++) {
+                        var facilityId = "c" + i;
+                        var facilityElement = document.getElementById(facilityId);
+                        if (facilityDescriptions[hotelName] && facilityDescriptions[hotelName][facilityId]) {
+                            facilityElement.style.display = "flex";
+                            facilityElement.getElementsByTagName("p")[0].innerText = facilityDescriptions[hotelName][facilityId];
+                        } else {
+                            facilityElement.style.display = "none";
+                        }
+                    }
+                }
+				
+				
+				var hotelImages = {
+            "제주 글로스터 호텔": {
+                "a1": "images/jeju_hall.jpg",
+                "a2": "images/jeju_swim.jpg",
+				"a3": "images/jeju_dang.jpg",
+				"a4": "images/jeju_nora.jpg",
+				"a5": "images/jeju_rest.jpg",
+				"a6": "images/jeju_gym.jpg",
+                // 나머지 부대시설에 대한 이미지 경로
+            },
+            "서울 그랜드 하얏트 호텔": {
+				"a1": "images/seoul_hall.webp",
+                "a2": "images/seoul_swim.webp",
+				"a3": "images/seoul_dang.jpg",
+				"a4": "images/seoul_nora.jpg",
+				"a5": "images/seoul_rest.webp",
+				"a6": "images/seoul_gym.jpg",
+                // 나머지 부대시설에 대한 이미지 경로
+            },
+            "홀리데이 인 광주호텔": {
+				"a1": "images/gwang_hall.png",
+                "a2": "images/gwang_swim.jpg",
+				"a3": "images/gwang_dang.jpg",
+				"a4": "images/gwang_nora.jpg",
+				"a5": "images/gwang_rest.jpg",
+				"a6": "images/gwang_gym.jpg",
+                // 나머지 부대시설에 대한 이미지 경로
+            }
+        };
+
+		var facilityPrices = {
+                "제주 글로스터 호텔": {
+                    "d1": "500000",
+                    "d2": "100000",
+                    "d3": "10000",
+                    "d4": "10000",
+                    "d5": "30000",
+                    "d6": "10000",
+                    "d7": "5000"
+                },
+                "서울 그랜드 하얏트 호텔": {
+                    "d1": "700000",
+                    "d2": "20000",
+                    "d3": "10000",
+                    "d4": "10000",
+                    "d5": "40000",
+                    "d6": "7000",
+                    "d7": "0" // 무료로 가정
+                },
+                "홀리데이 인 광주호텔": {
+                    "d1": "800000",
+                    "d2": "20000",
+                    "d3": "10000",
+                    "d4": "20000",
+                    "d5": "50000",
+                    "d6": "5000",
+                    "d7": "0" // 무료로 가정
+                }
+            };
+
+			function updateFacilityPrices(hotelName) {
+                for (var i = 1; i <= 7; i++) {
+                    var convenienceId = "d" + i;
+                    var buttonId = "b" + i;
+                    var price = facilityPrices[hotelName][convenienceId];
+                    var button = document.getElementById(buttonId);
+                    if (button && price) {
+                        var href = button.getAttribute("href");
+                        var newHref = href.replace(/price=\d+/, "price=" + price);
+                        button.setAttribute("href", newHref);
+                    }
+                }
+            }
+
+
+        function updateFacilityImages(hotelName) {
+            var facilities = ["a1", "a2", "a3", "a4", "a5", "a6", "a7"];
+            facilities.forEach(function(facility) {
+                var facilityElement = document.getElementById(facility);
+                if (facilityElement && hotelImages[hotelName] && hotelImages[hotelName][facility]) {
+                    var img = facilityElement.getElementsByTagName("img")[0];
+                    if (img) {
+                        img.src = hotelImages[hotelName][facility];
+                    }
+                }
+            });
+        }
+
+
+				// 호텔 선택 시 부대시설 이미지 및 설명 변경
+				document.getElementById("hotel").onchange = function() {
+            var selectedHotel = this.value;
+            updateFacilityDescriptions(selectedHotel);
+            updateFacilityImages(selectedHotel);
+			updateFacilityPrices(selectedHotel);
+        };
+
+        // 기존 호텔 선택 로직에 이미지 업데이트 추가
+        var hotelName = getQueryParam('hotel');
+        if (hotelName) {
+            updateFacilityImages(hotelName);
+        }
+
+                
+				// 예약 버튼 클릭 시 호출되는 함수
+			function f_reservation(oid) {
+				var e = document.getElementById("hotel");
+				var value = e.options[e.selectedIndex].value;
+				
+				if (value == "호텔선택") {
+					return window.alert("호텔을 선택해주세요");
+				}
+				
+				var urlParams = new URL(document.getElementById(oid).href).searchParams;
+				var convenienceName = urlParams.get('convenience');
+				var price = urlParams.get("price")
+				document.getElementById(oid).href = `/f_reservation.html?hotel=${value}&convenience=${convenienceName}&price=${price}`;
+			}
+
+			// 각 예약 버튼에 함수 연결
+			document.getElementById("b1").onclick = function() {f_reservation("b1");}
+			document.getElementById("b2").onclick = function() {f_reservation("b2");}
+			document.getElementById("b3").onclick = function() {f_reservation("b3");}
+			document.getElementById("b4").onclick = function() {f_reservation("b4");}
+			document.getElementById("b5").onclick = function() {f_reservation("b5");}
+			document.getElementById("b6").onclick = function() {f_reservation("b6");}
+			document.getElementById("b7").onclick = function() {f_reservation("b7");}
+            }
+			
+		
+		</script>
+		<style>
+
+				#facility-image img {
+					max-width: 100%;
+					height: auto;
+				}
+
+				/* 각 이미지에 대한 크기 조정 */
+				#a1 img, #a2 img, #a3 img, #a4 img, #a5 img, #a6 img, #a7 img {
+					width: 1000px;
+					height: 300px;
+					object-fit: cover;
+				}
+			 /* ... 기존 스타일 ... */
+			 .facility-row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .facility-image {
+                flex: 0 0 40%; /* 이미지 크기 고정 */
+                text-align: center;
+            }
+
+            .facility-image img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .facility-description {
+                flex: 1; /* 나머지 공간을 채움 */
+                padding-left: 20px; /* 텍스트와 이미지 간 간격 */
+            }
+			
+			#c1, #c2, #c3, #c4, #c5, #c6, #c7 { display: none; }
+			img { width: 1000px; height: 300px; object-fit: cover; }
+		</style>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header">
+					<h1 id="logo"><a href="index.html">목대어때</a></h1>
+					<nav id="nav">
+						<ul>
+							<li><a href="index.html">메인화면</a></li>
+							<li>
+								<a href="#">예약 하기</a>
+								<ul>
+									<li><a href="hotel_reservation.html">호텔 정보</a></li>
+									<li><a href="AF_reservation.html?convenience=1234567">부대시설 예약</a></li>
+									<li><a href="hotel name.html">호텔 예약</a></li>
+									
+								</ul>
+							</li>
+							<li><a href="come on.html">찾아오시는 길</a></li>
+							<li><a href="login.html" class="button primary" id="loginButton">로그인</a></li>
+						</ul>
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<div id="main" class="wrapper style1">	
+					<div class="container">
+						<header class="major">
+							<h2>예약하실 부대시설을 선택해주세요.</h2>
+						</header>
+						
+						<select id="hotel" onchange="changeLangSelect()">
+						<option value="호텔선택" selected>호텔선택</option>
+						<option value="제주 글로스터 호텔">제주 글로스터 호텔</option>
+						<option value="서울 그랜드 하얏트 호텔">서울 그랜드 하얏트 호텔</option>
+						<option value="홀리데이 인 광주호텔">홀리데이 인 광주호텔</option>
+					</select>
+						<table>
+							<tr id="c1" class="facility-row">
+								<td id="a1" class="facility-image">
+									<a href="#"><img src="images/hall.png" alt="연회장"/></a>
+								</td>
+								<td class="facility-description">
+									<h3>연회장</h3>
+									<p>행사 규모 및 성격에 따라 다양한 구조 변화가 가능합니다.기업 세미나, 연회, 친목 모임을
+										할 수 있고 숙련된 전문 스텝들이 최고의 행사를 지원해 드립니다.</p>
+										<ul class="actions">
+											<li><a href="/f_reservation.html?hotel=호텔선택&convenience=연회장&price=500000"id="b1" class="button">예약 바로가기</a></li>
+										</ul>
+									<hr />
+								</td>
+							</tr>
+								
+							<tr id="c2" class="facility-row">
+								<td id="a2" class="facility-image">
+									<a href="#"><img src="images/swim.png" alt="swim"/></a>
+								</td>
+								<td>
+									<h3>수영장</h3>
+									<p>편안하고 즐거운 휴식을 위한 수영장 시설을 자랑합니다. 햇볕을 즐기면서 수영을 즐기거나, 풍경을 감상하며 휴식하는 등 다양한 활동을 즐길 수 있습니다.</p>
+									<ul class="actions">
+										<li><a href="/f_reservation.html?hotel=호텔선택&convenience=수영장&price=100000"id="b2" class="button">예약 바로가기</a></li>
+									</ul>
+									<hr />
+								</td>
+							</tr>
+
+							<tr id="c3" class="facility-row">
+								<td id="a3" class="facility-image">
+									<a href="#"><img  src="images/dang9.png" alt="dang9"/></a>
+								</td>
+								<td>
+									<h3>당구장</h3>
+									<p>품격 있는 분위기에서 다양한 당구 게임을 즐길 수 있으며, 이곳에서는 친구들과의 경쟁이나 가족과의 소소한 즐거움을 찾을 수 있습니다</p>
+									<ul class="actions">
+										<li><a href="/f_reservation.html?hotel=호텔선택&convenience=당구장&price=10000"id="b3" class="button">예약 바로가기</a></li>
+									</ul>
+									<hr />
+								</td>
+							</tr>
+
+							<tr id="c4" class="facility-row">
+								<td id="a4" class="facility-image">
+									<a href="#"><img  src="images/sing.png" alt="sing"/></a>
+								</td>
+								<td>
+									<h3>노래방</h3>
+									<p>모던하고 편안한 분위기에서 음악을 즐길 수 있는 공간으로, 최신 곡부터 클래식까지 다양한 음악 선택지를 제공하여 모든 취향에 맞는 즐거운 노래 시간을 보낼 수 있습니다</p>
+									<ul class="actions">
+										<li><a href="/f_reservation.html?hotel=호텔선택&convenience=노래방&price=10000"id="b4" class="button">예약 바로가기</a></li>
+									</ul>
+									<hr />
+								</td>
+							</tr>
+
+							<tr id="c5" class="facility-row">
+								<td id="a5" class="facility-image">
+									<a href="#"><img  src="images/restaurant.jpg" alt="restaurant"/></a>
+								</td>
+								<td>
+									<h3>식당</h3>
+									<p>맛있는 음식을 즐길 수 있는 공간으로, 한식, 양식 모두를 선택할 수 있습니다.</p>
+									<ul class="actions">
+										<li><a href="/f_reservation.html?hotel=호텔선택&convenience=식당&price=30000"id="b5" class="button">예약 바로가기</a></li>
+									</ul>
+									<hr />
+								</td>
+							</tr>
+
+							<tr id="c6" class="facility-row">
+								<td id="a6" class="facility-image">
+									<a href="#"><img  src="images/gym.jfif" alt="gym"/></a>
+								</td>
+								<td>
+									<h3>헬스장</h3>
+									<p>편안하고 즐거운 운동 시설을 구비하였으며, 어린이부터 청소년, 어른까지 운동으로 몸도 마음도 튼튼</p>
+									<ul class="actions">
+										<li><a href="/f_reservation.html?hotel=호텔선택&convenience=헬스장&price=10000"id="b6" class="button">예약 바로가기</a></li>
+									</ul>
+									<hr />
+								</td>
+							</tr>
+
+							<tr id="c7" class="facility-row">
+								<td id="a7" class="facility-image">
+									<a href="#"><img  src="images/parking_lot.jpg" alt="parking_lot"/></a>
+								</td>
+								<td>
+									<h3>주차장</h3>
+									<p>자동차를 주차를 할 수 있습니다.</p>
+									<ul class="actions">
+										<li><a href="/f_reservation.html?hotel=호텔선택&convenience=주차장&price=5000"id="b7" class="button">예약 바로가기</a></li>
+									</ul>
+									<hr />
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<footer id="footer">
+				<ul class="icons">
+					<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+					<li><a href="#" class="icon solid alt fa-envelope"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li><a href="#">Design by 193918 193615 203620</a></li>
+				</ul>
+			</footer>
+
+		</div>
+
+		<!-- Scripts -->
+		
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/loginst.js"></script>
+	</body>
+</html>

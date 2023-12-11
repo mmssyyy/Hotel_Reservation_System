@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>1:1채팅관리</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main2.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="assets/js/hotel_reserve.js"></script>
+		<script>
+			function addRow(customerInfo) {
+				const table = document.getElementById('customerContact');
+				const newRow = table.insertRow();
+				
+				for (var col=0; col<customerInfo.length; col++) {
+					const newCell = newRow.insertCell(col);
+					newCell.innerText = customerInfo[col];
+				}
+			}
+			
+			window.onload = function() {
+				for (var i=0; i<customer_Contact.length; i++) {
+					addRow(customer_Contact[i]);
+				}
+				var newRow = HTMLTableElement.insertRow(index);
+			}
+		</script>
+		</script>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+			<header id="header">
+				<h1 id="logo">
+					<a href="manage.html">관리자메뉴</a>
+					<span class="title">1:1채팅관리</span>
+				</h1>
+			</header>
+
+			<table id="customerContact" style="font-size: 15px;">
+				<tr>
+					<th>상담일시</th>
+					<th>상담사ID</th>
+					<th>고객관리ID</th>
+					<th>상담내용</th>
+				</tr>
+			</table>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

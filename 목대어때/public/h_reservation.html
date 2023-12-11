@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>호텔 예약</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <script>
+        window.onload = function() {
+    // 쿼리 문자열 매개변수를 얻는 함수
+    function getQueryParam(param) {
+        var params = new URLSearchParams(window.location.search);
+        return params.get(param);
+    }
+
+    // 쿼리 문자열에서 호텔 이름, 객실 유형, 가격을 가져와 입력 필드에 설정
+    var hotelName = getQueryParam('hotel');
+    var roomType = getQueryParam('roomtype');
+    var price = getQueryParam('price');
+
+    if (hotelName) {
+        document.getElementById('hotel_name').value = hotelName;
+    }
+    if (roomType) {
+        document.getElementById('room_type').value = roomType; // 'room_type'은 객실 유형을 입력하는 필드의 ID입니다.
+    }
+    if (price) {
+        document.getElementById('room_price').value = price; // 'price'는 가격을 입력하는 필드의 ID입니다.
+    }
+}
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .form-container {
+            max-width: 400px;
+            width: 100%;
+            padding: 1em;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: 60px;
+            margin-bottom: 5px;
+            
+        }
+
+        form h3 {
+            color: #4e4e4e;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #4e4e4e;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        label, input {
+            margin-bottom: 7px; /* 모든 레이블과 입력 필드의 하단 간격을 5px로 조정 */
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: 100%;
+            padding: 0.5em;
+            margin: 1px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 1em;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        input[type="text"]:not(:last-child),
+        input[type="date"]:not(:last-child) {
+            margin-bottom: 7px; /* 텍스트 및 날짜 입력 필드의 하단 간격을 10px로 조정 */
+        }
+
+        input[type="text"]:read-only {
+            background-color: #eee;
+            cursor: not-allowed;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+    padding: 0.7em;
+    border: none;
+    border-radius: 3px;
+    background: #333;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 30px;
+    text-align: center; /* 버튼 텍스트 중앙 정렬 */
+            line-height: normal; /* 버튼 내 텍스트의 줄 간격 조정 */
+}
+
+        input[type="submit"]:hover {
+            background: #555;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #333;
+            color: white;
+            width: 100%;
+        }
+
+        .form-title {
+            background-color: #333;
+            color: white;
+            font-size: 1.5em;
+            padding: 10px;
+            border-radius: 5px 5px 0 0;
+            margin-top: 0;
+            margin-bottom: 10px;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <h1 id="logo"><a href="index.html">목대 어때</a></h1>
+    </header>
+
+    <div class="form-container">
+        <h3 class="form-title">호텔 예약</h3>
+        <form action="/reserve" method="post" id="reservationForm">
+
+             <!-- 랜덤으로 설정할 필드들을 추가 -->
+             <input type="hidden" id="reservation_id" name="reservation_id">
+             <input type="hidden" id="customer_id" name="customer_id">
+             <input type="hidden" id="hotel_id" name="hotel_id">
+             <input type="hidden" id="reservation_status" name="reservation_status">
+
+             <label for="hotel_name">호텔 이름:</label>
+             <input type="text" id='hotel_name' name='hotel_name' value="" readonly>
+            
+            <label for="customer_name">고객 이름:</label>
+            <input type="text" id="customer_name" name="customer_name" required>
+
+            <label for="room_price">객실 가격:</label>
+            <input type="text" id="room_price" name="room_price" value="100,000" readonly>
+
+            <label for="room_type">객실 유형:</label>
+            <input type="text" id="room_type" name="room_type" required>
+
+            <label for="number_of_guests">예약 인원:</label>
+            <input type="text" id="number_of_guests" name="number_of_guests" required>
+
+            <label for="start_date">예약 시작일:</label>
+            <input type="date" id="start_date" name="start_date" required>
+
+            <label for="end_date">예약 종료일:</label>
+            <input type="date" id="end_date" name="end_date" required>
+
+            <input type="submit" value="예약하기">      
+        </form>
+    </div>
+    <footer>
+        <p>Have a nice day</p>
+    </footer>
+
+    <script>
+        document.getElementById('reservationForm').onsubmit = function(event) {
+    
+            // 랜덤한 값을 생성하여 예약 ID, 고객 ID, 호텔 ID에 설정
+            var reservationId = Math.floor(Math.random() * 1000); // 예약 ID
+            var customerId = Math.floor(Math.random() * 1000);    // 고객 ID
+            var hotelId = Math.floor(Math.random() * 1000);       // 호텔 ID
+    
+            document.getElementById('reservation_id').value = reservationId;
+            document.getElementById('customer_id').value = customerId;
+            document.getElementById('hotel_id').value = hotelId;
+    
+            // 예약 상태를 "Reserved"로 설정
+            document.getElementById('reservation_status').value = 'Reserved';
+    
+        };
+    </script>
+
+
+</body>
+</html>
